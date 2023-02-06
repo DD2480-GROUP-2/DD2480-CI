@@ -21,8 +21,20 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     // TODO!
     public void getRepoURL(){}
 
-    // TODO!
-    public void cloneRepo(){}
+    /**
+     * Clones a github repository to the folder ./clonedRepo that can later be built and tested.
+     * @param repoURL the destination of the repository to be cloned
+     * @throws Exception if cloning failed
+    */
+    public static void cloneRepo(String repoURL) throws Exception {
+        try {
+            Process process=Runtime.getRuntime().exec("git clone "+repoURL+ " ./clonedRepo");
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new Exception("Failed to clone "+repoURL);
+        }
+
+    }
 
     // TODO!
     public void buildAndTestRepo(){} // Might be two separate methods?
