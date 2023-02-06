@@ -27,19 +27,13 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // 1st clone your repository
         // 2nd compile the code
         String req = "[" + request.getReader().readLine() + "]";
-        System.out.println(req);
         JSONArray jArray = new JSONArray(req);  
 
-        parseJSON(jArray);
+        getRepoURL(jArray);
     }
 
     // TODO!
-    public void parseJSON(JSONArray jArray){
-        System.out.println(jArray.getJSONObject(0));
-    }
-
-    // TODO!
-    public void getRepoURL(){}
+    public void getRepoURL(JSONArray jArray){}
 
     // TODO!
     public void cloneRepo(){}
