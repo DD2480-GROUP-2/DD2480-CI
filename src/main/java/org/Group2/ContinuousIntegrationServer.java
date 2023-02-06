@@ -44,8 +44,11 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     public static void cloneRepo(String repoURL) throws Exception {
         try {
             File file = new File("./clonedRepo");
-            deleteDirectory(file);
-            file.delete();
+            if(file.isDirectory()){
+                deleteDirectory(file);
+                file.delete();
+            }
+            
 
             Process process=Runtime.getRuntime().exec("git clone "+repoURL+ " ./clonedRepo");
             process.waitFor();
