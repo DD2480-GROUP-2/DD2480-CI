@@ -11,8 +11,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONArray;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import com.roxstudio.utils.CUrl;  
+
+
 
 
 public class ContinuousIntegrationServer extends AbstractHandler {
@@ -29,15 +32,28 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // for example
         // 1st clone your repository
         // 2nd compile the code
-        String req = "[" + request.getReader().readLine() + "]";
-        JSONArray jArray = new JSONArray(req);  
 
-        getRepoURL(jArray);
-        sendResponse(true,true, jArray);
+        String req = request.getReader().readLine();
+        JSONObject jsonRequest = new JSONObject(req);
+        String repoSSHURL = getRepoURL(jsonRequest);
+        sendResponse(true,true, jsonRequest);
+
     }
 
-    // TODO!
-    public void getRepoURL(JSONArray jArray){}
+    /**
+     * Takes a JSON object from a github webhook request and returns the ssh url to the repository.
+     * @param jsonRequest A request parsed as a JSONObject containing an object with a repository which has an ssh_url key.
+     * @return A string containing the ssh-url to the repository
+     */
+    public String getRepoURL(JSONObject jsonRequest){
+        try {
+            String sshURL = jsonRequest.getJSONObject("repository").get("ssh_url").toString();
+            return sshURL;
+        } catch (JSONException je) {
+            System.err.println("ssh_url to repository does not exist.");
+            return null;
+        }
+    }
 
 
     /**
@@ -82,17 +98,17 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * Sends a post-request to the github api setting the check-status of the commit.
      * @param build status of the build (success/failure)
      * @param tests status of the tests (success/failure)
-     * @param jArray the json-data acquired from the request
+     * @param jObject the json-data acquired from the request
     */
-    public void sendResponse(boolean build, boolean tests, JSONArray jArray) {
+    public void sendResponse(boolean build, boolean tests, JSONObject jObject) {
         String state = build && tests ? "success" : "failure";
         String description;
         if (build && tests) {description = "Everything succeeded";}
         else if (build && (!tests)) {description = "Tests failed";}
         else {description = "Build and tests failed";}
 
-        String sha = jArray.getJSONObject(0).getString("after");
-        String ownerRepo = jArray.getJSONObject(0).getJSONObject("repository").getString("full_name");
+        String sha = jObject.getString("after");
+        String ownerRepo = jObject.getJSONObject("repository").getString("full_name");
         CUrl post = new CUrl("https://api.github.com/repos/" + ownerRepo + "/statuses/" + sha)
                             .header("Accept: application/vnd.github+json")
                             .header("Authorization: Bearer " + token)
