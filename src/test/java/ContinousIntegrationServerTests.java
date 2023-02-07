@@ -24,5 +24,10 @@ public class ContinousIntegrationServerTests {
         }
         
     }
+    
+    @Test
+    public void TestDummyFunction(){
+        assertTrue(ContinuousIntegrationServer.dummyFunction()==123, "Error, the dummy function should return 123");
+    }
 }
 
