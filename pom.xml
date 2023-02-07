@@ -17,6 +17,13 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.rockswang</groupId>
+            <artifactId>java-curl</artifactId>
+            <version>1.2.2.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
