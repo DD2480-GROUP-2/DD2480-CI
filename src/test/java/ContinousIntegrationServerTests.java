@@ -24,5 +24,10 @@ public class ContinousIntegrationServerTests {
         }
         
     }
+
+    @Test
+    public void TestGetPushedBranch() {
+        
+    }
 }
 
