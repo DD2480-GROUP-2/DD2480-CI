@@ -10,12 +10,9 @@ import java.io.File;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.roxstudio.utils.CUrl;  
-
-
 
 
 public class ContinuousIntegrationServer extends AbstractHandler {
@@ -37,6 +34,22 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         JSONObject jsonRequest = new JSONObject(req);
         String repoSSHURL = getRepoURL(jsonRequest);
         sendResponse(true,true, jsonRequest);
+
+    }
+
+    /**
+     * Take a request from a git webhook and return a string with the branch the action took place on.
+     * @param jsonRequest A request from a github webhook parsed as a JSONObject.
+     * @return A string with the name of the branch.
+     */
+    public String getPushedBranch(JSONObject jsonRequest) {
+        try {
+            var branchRef = jsonRequest.get("ref").toString().split("/");
+            return branchRef[branchRef.length - 1];
+        } catch (JSONException je) {
+            System.err.println("Branch name of the event not found");
+            return null;
+        }
 
     }
 
