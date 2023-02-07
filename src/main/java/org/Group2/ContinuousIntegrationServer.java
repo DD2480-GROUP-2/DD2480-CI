@@ -79,13 +79,15 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
 
     /**
-     * TODO
+     * Sends a post-request to the github api setting the check-status of the commit.
+     * @param build status of the build (success/failure)
+     * @param tests status of the tests (success/failure)
+     * @param jArray the json-data acquired from the request
     */
     public void sendResponse(boolean build, boolean tests, JSONArray jArray) {
         String state = build && tests ? "success" : "failure";
         String description;
         if (build && tests) {description = "Everything succeeded";}
-        else if ((!build) && tests) {description = "Build failed";}
         else if (build && (!tests)) {description = "Tests failed";}
         else {description = "Build and tests failed";}
 
