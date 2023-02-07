@@ -102,6 +102,13 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
     }
 
+    /**
+     * Can be modified to trigger test errors.
+     * @return for test passed should return 123
+     */
+    public static int dummyFunction(){
+        return 123;
+    }
 
     public static void main(String[] args) throws Exception {
         Server server = new Server(8002);
