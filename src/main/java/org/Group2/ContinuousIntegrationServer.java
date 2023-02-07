@@ -64,7 +64,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             }
             
 
-            Process process=Runtime.getRuntime().exec("git clone "+repoURL+ " ./clonedRepo");
+            Process process=Runtime.getRuntime().exec("git clone -b "+repoURL+ " ./clonedRepo");
             process.waitFor();
         } catch (IOException | InterruptedException e) {
             throw new Exception("Failed to clone "+repoURL);
