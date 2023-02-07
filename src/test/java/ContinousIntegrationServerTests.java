@@ -34,5 +34,10 @@ public class ContinousIntegrationServerTests {
         JSONObject noRepoJSONObject = new JSONObject(noRepoJSONString);
         assertNull(server.getRepoURL(noRepoJSONObject), "Error: getRepoUrl returned a string even though there is no repository ssh url in the object");
     }
+    
+    @Test
+    public void TestDummyFunction(){
+        assertTrue(ContinuousIntegrationServer.dummyFunction()==123, "Error, the dummy function should return 123");
+    }
 }
 
