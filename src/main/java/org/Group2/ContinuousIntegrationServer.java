@@ -13,7 +13,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import org.json.JSONObject;  
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONArray;  
 
 public class ContinuousIntegrationServer extends AbstractHandler {
@@ -28,14 +29,26 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // for example
         // 1st clone your repository
         // 2nd compile the code
-        String req = "[" + request.getReader().readLine() + "]";
-        JSONArray jArray = new JSONArray(req);  
 
-        getRepoURL(jArray);
+        String req = request.getReader().readLine();
+        JSONObject jsonRequest = new JSONObject(req);
+        String repoSSHURL = getRepoURL(jsonRequest);
     }
 
-    // TODO!
-    public void getRepoURL(JSONArray jArray){}
+    /**
+     * Takes a JSON object from a github webhook request and returns the ssh url to the repository.
+     * @param jsonRequest A request parsed as a JSONObject containing an object with a repository which has an ssh_url key.
+     * @return A string containing the ssh-url to the repository
+     */
+    public String getRepoURL(JSONObject jsonRequest){
+        try {
+            String sshURL = jsonRequest.getJSONObject("repository").get("ssh_url").toString();
+            return sshURL;
+        } catch (JSONException je) {
+            System.err.println("ssh_url to repository does not exist.");
+            return null;
+        }
+    }
 
 
     /**
