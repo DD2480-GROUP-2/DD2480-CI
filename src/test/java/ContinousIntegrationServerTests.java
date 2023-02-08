@@ -51,5 +51,15 @@ public class ContinousIntegrationServerTests {
         JSONObject examplePushRequestJSONObject = new JSONObject(examplePushRequestJSONString);
         assertEquals(ci.getPushedBranch(examplePushRequestJSONObject), "6-get-repourl-method", "Error: Got the wrong name for the pushed branch");
     }
+
+    /**
+     * Tests that the compileMvnProject function compiles a Maven project that is compilable.
+     */
+    @Test
+    public void TestCompileCorrectProject() {
+        ContinuousIntegrationServer CIs = new ContinuousIntegrationServer();
+        boolean compileStatus = CIs.compileMvnProject("./testBuilds/testCorrectCompile");
+        assertTrue(compileStatus, "Error: Project should compile correctly");
+    }
 }
 
