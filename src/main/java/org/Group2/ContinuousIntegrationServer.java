@@ -15,9 +15,18 @@ import org.json.JSONObject;
 import com.roxstudio.utils.CUrl;  
 
 
+/**
+ * A small lightweight handler for a server which implements core CI server functionality including webhook communication over http, 
+ * cloning, building and testing of a github repository and then returning responses to the original Github commit.
+ */
 public class ContinuousIntegrationServer extends AbstractHandler {
     static String token = "YOUR-TOKEN";
 
+    /**
+     * Main handle function.
+     * Is called for every incoming http request. The function makes sure that the request is from github webhooks and then 
+     * continues calling every step of the CI routine.
+     */
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
