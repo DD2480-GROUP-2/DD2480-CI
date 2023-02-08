@@ -132,11 +132,21 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     /**
      * Compiles a Maven project located in a specified directory.
      * @param path a string specifying the directory
-     * @return a boolean value which is true if the compile was successfil, and false otherwise
+     * @return a boolean value which is true if the compile was successful, and false otherwise
      */
     public boolean compileMvnProject(String path) {
         int compileStatus = this.runCommand("mvn clean compile", path);
         return compileStatus == 0;
+    }
+
+    /**
+     * Runs a Maven project test-suite located in a specified directory. If the project is not yet compiled, the function will also compile.
+     * @param path a string specifying the directory
+     * @return a boolean value which is true if the tests were successful, and false otherwise
+     */
+    public boolean testMvnProject(String path) {
+        int testStatus = this.runCommand("mvn clean test", path);
+        return testStatus == 0;
     }
 
 
