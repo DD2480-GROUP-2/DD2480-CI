@@ -32,8 +32,13 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
         String req = request.getReader().readLine();
         JSONObject jsonRequest = new JSONObject(req);
-        String repoSSHURL = getRepoURL(jsonRequest);
-        sendResponse(true,true, jsonRequest);
+        String repoHTTPSURL = getRepoURL(jsonRequest);
+        String branchName = getPushedBranch(jsonRequest);
+        try {cloneRepo(branchName + " " + repoHTTPSURL);
+        } catch (Exception e) {
+            throw new ServletException("Clone not successful");
+        }
+        //sendResponse(true,true, jsonRequest);
 
     }
 
@@ -60,10 +65,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      */
     public String getRepoURL(JSONObject jsonRequest){
         try {
-            String sshURL = jsonRequest.getJSONObject("repository").get("ssh_url").toString();
-            return sshURL;
+            String httpsURL = jsonRequest.getJSONObject("repository").get("clone_url").toString();
+            return httpsURL;
         } catch (JSONException je) {
-            System.err.println("ssh_url to repository does not exist.");
+            System.err.println("clone_url to repository does not exist.");
             return null;
         }
     }
