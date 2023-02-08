@@ -61,5 +61,25 @@ public class ContinousIntegrationServerTests {
         boolean compileStatus = CIs.compileMvnProject("./testBuilds/testCorrectCompile");
         assertTrue(compileStatus, "Error: Project should compile correctly");
     }
+
+    /**
+     * Tests that the testMvnProject function test a Maven project where all tests should pass.
+     */
+    @Test
+    public void TestTestCorrectProject() {
+        ContinuousIntegrationServer CIs = new ContinuousIntegrationServer();
+        boolean testStatus = CIs.testMvnProject("./testBuilds/testCorrectCompile");
+        assertTrue(testStatus, "Error: Project should compile correctly");
+    }
+
+    /**
+     * Tests that the testMvnProject function test a Maven project where some tests should fail.
+     */
+    @Test
+    public void TestTestFailProject() {
+        ContinuousIntegrationServer CIs = new ContinuousIntegrationServer();
+        boolean testStatus = CIs.testMvnProject("./testBuilds/testFailTest");
+        assertFalse(testStatus, "Error: Project should not pass all tests");
+    }
 }
 
