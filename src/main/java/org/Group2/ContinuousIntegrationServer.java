@@ -104,6 +104,15 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     }
 
     /**
+     * Checkout to a branch in a specific repository.
+     * @param branch Name of the branch.
+     * @param repoPath Path to the local project repository.
+     */
+    public void checkOutBranch(String branch, String repoPath) {
+        runCommand("git checkout " + branch, repoPath);
+    }
+
+    /**
      * Executes a given "sh" shell command in a specified directory.
      * @param command a string containing the shell command
      * @param path a string specifying the directory
