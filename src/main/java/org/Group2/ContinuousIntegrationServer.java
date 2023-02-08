@@ -25,21 +25,19 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
         System.out.println(target);
 
-        // here you do all the continuous integration tasks
-        // for example
-        // 1st clone your repository
-        // 2nd compile the code
-
-        String req = request.getReader().readLine();
-        JSONObject jsonRequest = new JSONObject(req);
-        String repoHTTPSURL = getRepoURL(jsonRequest);
-        String branchName = getPushedBranch(jsonRequest);
-        try {cloneRepo(branchName + " " + repoHTTPSURL);
-        } catch (Exception e) {
-            throw new ServletException("Clone not successful");
+        //Check if request is from webhook
+        if (request.getHeader("User-Agent").split("/")[0].equals("GitHub-Hookshot"))
+        {
+          String req = request.getReader().readLine();
+          JSONObject jsonRequest = new JSONObject(req);
+          String repoHTTPSURL = getRepoURL(jsonRequest);
+          String branchName = getPushedBranch(jsonRequest);
+          try {cloneRepo(branchName + " " + repoHTTPSURL);
+          } catch (Exception e) {
+              throw new ServletException("Clone not successful");
+          }
+          //sendResponse(true,true, jsonRequest);
         }
-        //sendResponse(true,true, jsonRequest);
-
     }
 
     /**
