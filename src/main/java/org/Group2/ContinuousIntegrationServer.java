@@ -36,7 +36,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
           } catch (Exception e) {
               throw new ServletException("Clone not successful");
           }
-          //sendResponse(true,true, jsonRequest);
+
+          sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo"), jsonRequest);
         }
     }
 
