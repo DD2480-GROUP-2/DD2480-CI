@@ -43,3 +43,5 @@ If your system sits behind a firewall blocking incomming requests we recommend u
 
 ## Build logs  
 Build and test logs are generated after each commit, to access these you can go to your visit your servers address your browser and you will be presented with a list of all generated log files. Note that the server is only listening to port 8002 so we strongly recommend using ngrok for this feature to work. Otherwise you would have to send a GET request on port 8002 to recieve the index.html file. 
+
+

@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.util.Scanner;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -52,6 +53,44 @@ public class ContinuousIntegrationServer extends AbstractHandler {
           }
 
           sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo", createBuildLogFile(jsonRequest)), jsonRequest);
+        } else {
+            sendBuilds(target, response); // Send build queried in target
+        }
+    }
+
+     /**
+     * Function for creating a basic HTML string of queried build log-files and sending the builds as http response through HttpServletResponse 
+     * @param target a string specifying the path target
+     * @param response a HttpServletResponse to send HTML string to
+     * @throws IOException
+     * @throws ServletException
+     */
+    public void sendBuilds(String target, HttpServletResponse response) throws IOException, ServletException {
+        if (target.startsWith("/builds/")) {
+            File buildFile = new File("."+target);
+            if (buildFile.isFile()) {
+                StringBuilder strB = new StringBuilder();
+                try {
+                    Scanner myReader = new Scanner(buildFile);
+                    while (myReader.hasNextLine()) {
+                      strB.append("<div>").append(myReader.nextLine()).append("</div>");
+                    }
+                    myReader.close();
+                  } catch (Exception e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                  }
+                response.getWriter().println("<div><h1>Build</h1><div><a href='/'>Back to builds</a></div><div>"+ strB.toString() +"</div></div>");
+            } else {
+                response.getWriter().println("<div><h1>No build</h1><div>No build with that id</div><a href='/'>Back to builds</a><div></div></div>");
+            }
+        } else {
+            StringBuilder htmlStringB = new StringBuilder("<h1>Builds</h1>");
+            File buildDirectory = new File("./builds");
+            for (File file : buildDirectory.listFiles()) {
+                htmlStringB.append("<div><a href='/builds/" + file.getName() + "'>" + file.getName() + "</a></div>");
+            }
+            response.getWriter().println(htmlStringB.toString());
         }
     }
 
