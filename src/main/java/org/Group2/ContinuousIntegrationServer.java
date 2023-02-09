@@ -6,6 +6,9 @@ import javax.servlet.ServletException;
 
 import java.io.IOException;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -155,6 +158,39 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     public boolean testMvnProject(String path) {
         int testStatus = this.runCommand("mvn clean test", path);
         return testStatus == 0;
+    }
+
+        /**
+     * Appends a string to a specified file.
+     * @param file the File to write to
+     * @param stringToWrite the string to write
+     */
+    public void writeToFile(File file, String stringToWrite) {
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(stringToWrite);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates headers of build log-file, including git-commit sha, git-pusher email, and date/time
+     * @param logInfo a JSONObject acquired from a http request 
+     * @return the created File
+     */
+    public File createBuildLogFile(JSONObject logInfo) {
+        if (logInfo.has("after")) {
+            File newLogFile = new File("./builds/" + logInfo.getString("after") + ".log");
+            LocalDateTime timeObj = LocalDateTime.now();
+            String logHeader = "Commit ID: " + logInfo.getString("after") + "\nCommitter: " + logInfo.getJSONObject("pusher").getString("email") + "\nDate: " + timeObj + "\nBuild log:\n";
+            writeToFile(newLogFile, logHeader);
+            return newLogFile;
+        } else {
+            return null;
+        }
     }
 
 
