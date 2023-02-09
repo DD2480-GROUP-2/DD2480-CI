@@ -26,7 +26,7 @@ import com.roxstudio.utils.CUrl;
  * cloning, building and testing of a github repository and then returning responses to the original Github commit.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
-    static String token = "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";
+    static String token = "YOUR-TOKEN";
 
     /**
      * Main handle function.
