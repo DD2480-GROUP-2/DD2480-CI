@@ -9,6 +9,8 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -49,7 +51,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
               throw new ServletException("Clone not successful");
           }
 
-          sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo"), jsonRequest);
+          sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo", createBuildLogFile(jsonRequest)), jsonRequest);
         }
     }
 
@@ -123,14 +125,24 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * Executes a given "sh" shell command in a specified directory.
      * @param command a string containing the shell command
      * @param path a string specifying the directory
+     * @param logFile a File to write stdout to, null if no log should be written
      * @return exit value/code of the process
      */
-    public int runCommand(String command, String path){
+    public int runCommand(String command, String path, File logFile){
         ProcessBuilder pb = new ProcessBuilder("sh", "-c", command);
         pb.directory(new File(path));
 
         try {
             Process process = pb.start();
+            if (logFile != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                StringBuilder strB = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    strB.append(line).append("\n");
+                }
+                writeToFile(logFile, strB.toString());
+            }
             int exitValue = process.waitFor();
             return exitValue;
         } catch (Exception e){
@@ -146,21 +158,22 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @return a boolean value which is true if the compile was successful, and false otherwise
      */
     public boolean compileMvnProject(String path) {
-        int compileStatus = this.runCommand("mvn clean compile", path);
+        int compileStatus = this.runCommand("mvn clean compile", path, null);
         return compileStatus == 0;
     }
 
     /**
      * Runs a Maven project test-suite located in a specified directory. If the project is not yet compiled, the function will also compile.
      * @param path a string specifying the directory
+     * @param logFile a File to write build-logs to, null if no log should be written
      * @return a boolean value which is true if the tests were successful, and false otherwise
      */
-    public boolean testMvnProject(String path) {
-        int testStatus = this.runCommand("mvn clean test", path);
+    public boolean testMvnProject(String path, File logFile) {
+        int testStatus = this.runCommand("mvn clean test", path, logFile);
         return testStatus == 0;
     }
 
-        /**
+    /**
      * Appends a string to a specified file.
      * @param file the File to write to
      * @param stringToWrite the string to write

@@ -72,7 +72,7 @@ public class ContinousIntegrationServerTests {
         boolean compileStatus = CIs.compileMvnProject("./testBuilds/testCorrectCompile");
         assertTrue(compileStatus, "Error: Project should compile correctly");
 
-        boolean testStatus = CIs.testMvnProject("./testBuilds/testCorrectCompile");
+        boolean testStatus = CIs.testMvnProject("./testBuilds/testCorrectCompile", null);
         assertTrue(testStatus, "Error: Tests should go through");
     }
 
@@ -85,7 +85,7 @@ public class ContinousIntegrationServerTests {
         boolean compileStatus = CIs.compileMvnProject("./testBuilds/testFailTest");
         assertTrue(compileStatus, "Error: Project should compile correctly");
 
-        boolean testStatus = CIs.testMvnProject("./testBuilds/testFailTest");
+        boolean testStatus = CIs.testMvnProject("./testBuilds/testFailTest", null);
         assertFalse(testStatus, "Error: Project should not pass all tests");
     }
 
