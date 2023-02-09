@@ -1,0 +1,50 @@
+Commit ID: 7105911c48245af0570abefdd487f781fde44869
+Committer: 70980425+jakobewaldsson@users.noreply.github.com
+Date: 2023-02-09T21:35:10.609263589
+Build log:
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< org.Group2:CIServer >-------------------------
+[INFO] Building CIServer 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ CIServer ---
+[INFO] Deleting /home/snok/Documents/DD2480-CI/clonedRepo/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ CIServer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/snok/Documents/DD2480-CI/clonedRepo/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ CIServer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/snok/Documents/DD2480-CI/clonedRepo/target/classes
+[WARNING] /home/snok/Documents/DD2480-CI/clonedRepo/src/main/java/org/Group2/ContinuousIntegrationServer.java: /home/snok/Documents/DD2480-CI/clonedRepo/src/main/java/org/Group2/ContinuousIntegrationServer.java uses or overrides a deprecated API.
+[WARNING] /home/snok/Documents/DD2480-CI/clonedRepo/src/main/java/org/Group2/ContinuousIntegrationServer.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ CIServer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/snok/Documents/DD2480-CI/clonedRepo/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ CIServer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/snok/Documents/DD2480-CI/clonedRepo/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M8:test (default-test) @ CIServer ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running ContinousIntegrationServerTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.322 s - in ContinousIntegrationServerTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.831 s
+[INFO] Finished at: 2023-02-09T21:35:22+01:00
+[INFO] ------------------------------------------------------------------------
