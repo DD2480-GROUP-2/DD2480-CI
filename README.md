@@ -17,3 +17,10 @@ Collectively we are proud of our work, especially considering that we were one m
 * Handled direct communication with github API and webhooks
 * Set up the eartly maven dependencies
 * Actively discussed and experimented to come up with ways of solving the task (together with everyone else)  
+
+#### Oskar Svanström
+* Created the initial server class shell.
+* Wrote the cloneRepo function along with helper functions and tests.
+* Created some dummy tests.
+* Wrote some of the documentation.
+* Actively discussed and experimented to come up with ways of solving the task (together with everyone else)  
