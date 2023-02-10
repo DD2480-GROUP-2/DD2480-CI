@@ -64,6 +64,16 @@ public class ContinousIntegrationServerTests {
     }
 
     /**
+     * Tests that the compileMvnProject function does not compile a Maven project that is not compilable.
+     */
+    @Test
+    public void TestCompileFailProject() {
+        ContinuousIntegrationServer CIs = new ContinuousIntegrationServer();
+        boolean compileStatus = CIs.compileMvnProject("./testBuilds/testFailCompile");
+        assertFalse(compileStatus, "Error: Project should not compile correctly");
+    }
+
+    /**
      * Tests that the testMvnProject function test a Maven project where all tests should pass.
      */
     @Test
