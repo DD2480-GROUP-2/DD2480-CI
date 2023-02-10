@@ -53,6 +53,8 @@ To access the documentation, open the index file in the folder "apidocs" with a 
 ## How compilation and testing has been implemented and unit-tested
 The CI server handles compilation and testing with the use of Maven. This is done by starting a process and running the command "mvn clean compile" for compilation, and "mvn clean test" for testing. It is unit-tested by running either the compiling function, or testing function, on a sample project (which we know should or shouldn't compile and test correctly). The sample projects are located in the testBuilds-folder.
 
+## How notifications have been implemented
+In order to notify the user of the status of the commit, a status check is added next to the commit from "Our CI Tool". The status check is added by sending a post request to the github API by means of curl.
 
 ## Statement of Contributions  
 
