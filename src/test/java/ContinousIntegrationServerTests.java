@@ -70,7 +70,7 @@ public class ContinousIntegrationServerTests {
     public void TestCompileFailProject() {
         ContinuousIntegrationServer CIs = new ContinuousIntegrationServer();
         boolean compileStatus = CIs.compileMvnProject("./testBuilds/testFailCompile");
-        assertFalse(compileStatus, "Error: Project should compile correctly");
+        assertFalse(compileStatus, "Error: Project should not compile correctly");
     }
 
     /**
