@@ -6,6 +6,12 @@ import javax.servlet.ServletException;
 
 import java.io.IOException;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.util.Scanner;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -46,7 +52,45 @@ public class ContinuousIntegrationServer extends AbstractHandler {
               throw new ServletException("Clone not successful");
           }
 
-          sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo"), jsonRequest);
+          sendResponse(compileMvnProject("./clonedRepo"),testMvnProject("./clonedRepo", createBuildLogFile(jsonRequest)), jsonRequest);
+        } else {
+            sendBuilds(target, response); // Send build queried in target
+        }
+    }
+
+     /**
+     * Function for creating a basic HTML string of queried build log-files and sending the builds as http response through HttpServletResponse 
+     * @param target a string specifying the path target
+     * @param response a HttpServletResponse to send HTML string to
+     * @throws IOException
+     * @throws ServletException
+     */
+    public void sendBuilds(String target, HttpServletResponse response) throws IOException, ServletException {
+        if (target.startsWith("/builds/")) {
+            File buildFile = new File("."+target);
+            if (buildFile.isFile()) {
+                StringBuilder strB = new StringBuilder();
+                try {
+                    Scanner myReader = new Scanner(buildFile);
+                    while (myReader.hasNextLine()) {
+                      strB.append("<div>").append(myReader.nextLine()).append("</div>");
+                    }
+                    myReader.close();
+                  } catch (Exception e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                  }
+                response.getWriter().println("<div><h1>Build</h1><div><a href='/'>Back to builds</a></div><div>"+ strB.toString() +"</div></div>");
+            } else {
+                response.getWriter().println("<div><h1>No build</h1><div>No build with that id</div><a href='/'>Back to builds</a><div></div></div>");
+            }
+        } else {
+            StringBuilder htmlStringB = new StringBuilder("<h1>Builds</h1>");
+            File buildDirectory = new File("./builds");
+            for (File file : buildDirectory.listFiles()) {
+                htmlStringB.append("<div><a href='/builds/" + file.getName() + "'>" + file.getName() + "</a></div>");
+            }
+            response.getWriter().println(htmlStringB.toString());
         }
     }
 
@@ -120,14 +164,24 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * Executes a given "sh" shell command in a specified directory.
      * @param command a string containing the shell command
      * @param path a string specifying the directory
+     * @param logFile a File to write stdout to, null if no log should be written
      * @return exit value/code of the process
      */
-    public int runCommand(String command, String path){
+    public int runCommand(String command, String path, File logFile){
         ProcessBuilder pb = new ProcessBuilder("sh", "-c", command);
         pb.directory(new File(path));
 
         try {
             Process process = pb.start();
+            if (logFile != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                StringBuilder strB = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    strB.append(line).append("\n");
+                }
+                writeToFile(logFile, strB.toString());
+            }
             int exitValue = process.waitFor();
             return exitValue;
         } catch (Exception e){
@@ -143,18 +197,52 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @return a boolean value which is true if the compile was successful, and false otherwise
      */
     public boolean compileMvnProject(String path) {
-        int compileStatus = this.runCommand("mvn clean compile", path);
+        int compileStatus = this.runCommand("mvn clean compile", path, null);
         return compileStatus == 0;
     }
 
     /**
      * Runs a Maven project test-suite located in a specified directory. If the project is not yet compiled, the function will also compile.
      * @param path a string specifying the directory
+     * @param logFile a File to write build-logs to, null if no log should be written
      * @return a boolean value which is true if the tests were successful, and false otherwise
      */
-    public boolean testMvnProject(String path) {
-        int testStatus = this.runCommand("mvn clean test", path);
+    public boolean testMvnProject(String path, File logFile) {
+        int testStatus = this.runCommand("mvn clean test", path, logFile);
         return testStatus == 0;
+    }
+
+    /**
+     * Appends a string to a specified file.
+     * @param file the File to write to
+     * @param stringToWrite the string to write
+     */
+    public void writeToFile(File file, String stringToWrite) {
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(stringToWrite);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates headers of build log-file, including git-commit sha, git-pusher email, and date/time
+     * @param logInfo a JSONObject acquired from a http request 
+     * @return the created File
+     */
+    public File createBuildLogFile(JSONObject logInfo) {
+        if (logInfo.has("after")) {
+            File newLogFile = new File("./builds/" + logInfo.getString("after") + ".log");
+            LocalDateTime timeObj = LocalDateTime.now();
+            String logHeader = "Commit ID: " + logInfo.getString("after") + "\nCommitter: " + logInfo.getJSONObject("pusher").getString("email") + "\nDate: " + timeObj + "\nBuild log:\n";
+            writeToFile(newLogFile, logHeader);
+            return newLogFile;
+        } else {
+            return null;
+        }
     }
 
 
