@@ -50,6 +50,10 @@ Build and test logs are generated after each commit, to access these you can go 
 To access the documentation, open the index file in the folder "apidocs" with a web browser.
 
 
+## How compilation and testing has been implemented and unit-tested
+The CI server handles compilation and testing with the use of Maven. This is done by starting a process and running the command "mvn clean compile" for compilation, and "mvn clean test" for testing. It is unit-tested by running either the compiling function, or testing function, on a sample project (which we know should or shouldn't compile and test correctly). The sample projects are located in the testBuilds-folder.
+
+
 ## Statement of Contributions  
 
 Collectively we are proud of our work, especially considering that we were one member short, as she left the group before she could start working. We are very happy with how the project turned out and feel a great amount of pride, despite ecountering hurdles.
